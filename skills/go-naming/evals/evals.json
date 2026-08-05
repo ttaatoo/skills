@@ -1,0 +1,100 @@
+{
+  "skill_name": "go-naming",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我需要在我们的 webserver 项目里加一个新 service，处理数据导出任务的进度跟踪和结果存储。项目现有结构是 pkg/service/signalbox、pkg/service/exporttask、pkg/handler/accesscontrol、pkg/repository/mysql 这种风格，service 层一般是 unexported struct + New 构造函数 + interface。帮我新建这个 service：接口定义、实现、构造函数、相关 types。所有代码文件写到 outputs/ 目录下（按 go package 结构组织）。",
+      "expected_output": "A well-named Go service package: singular lowercase package name matching sibling style, types that don't stutter the package name, short consistent receivers, sibling-matching file names, unexported struct + New constructor, no DTO suffixes, no Get-prefix accessors.",
+      "files": [],
+      "expectations": [
+        "The new package name is a single lowercase word with no underscores or mixedCaps (e.g. 'exportprogress' or 'exporttask' style, NOT 'export_progress' or 'ExportProgress')",
+        "No exported type name stutters the package name (if package is 'exportprogress', no type like 'ExportProgressStatus' — should be 'Status')",
+        "Every method receiver is at most 2 characters and the same receiver name is used for all methods of a given type",
+        "No zero-argument Get-prefixed accessor methods exist (no 'GetStatus()', 'GetResult()'); accessor methods, if any, are named after the field",
+        "The service implementation struct is unexported and constructed via an exported New function",
+        "No type names end with DTO, VO, Entity, or Bean suffixes",
+        "Go file names use snake_case and no file is named exactly after its package directory (no pkg/pkg.go style)",
+        "No package or directory named util, utils, common, helper, helpers, types, or misc appears"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "帮我写一些通用的 go 工具函数：格式化时间、生成 ULID 格式的 event id、字符串 slice 去重、读环境变量带默认值。放到一个 package 里就行，代码写到 outputs 目录。",
+      "expected_output": "Should NOT create one util/helpers/common grab-bag package. Either split into focused packages (ids, timefmt, envx, strx) or justify a single package named for what it provides. Correct acronym casing (ID, ULID), noun variables without type suffixes, no Get prefixes.",
+      "files": [],
+      "expectations": [
+        "No package declaration is named util, utils, utilities, helper, helpers, common, misc, tools, base, or shared",
+        "All identifiers use correct acronym casing: ID and ULID appear all-caps; no 'Id', 'Ulid', 'Uid', 'Url', or 'Json' style miscased acronyms in hand-written identifiers",
+        "No function names use a redundant Get prefix (no GetEnvDefault/GetFormattedTime style; names like EnvOrDefault or FormatTime expected)",
+        "No variable or parameter names encode their type with Slice/Map/Array/Int/String suffixes (e.g. no 'idSlice', 'strList', 'envString')",
+        "If the helpers are split across packages, each package name says what it provides (e.g. ids, timefmt, envx); if kept in one package, the choice is explicitly justified and the name is still not a grab-bag word"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "我有个现有的 repository 类型，要加两个方法：根据 user id 查 session 列表、按 url 查一条推送记录；再加一个 sentinel error 表示记录名冲突。另外写个转换函数，把 proto 生成的 pb.SessionRecord（生成出来的 go 字段是 UserId、SourceUrl、CardJson）转成我的 domain struct。新代码写到 outputs 目录。",
+      "expected_output": "Receiver must be 'r' (matching existing code) on ALL new methods. Domain struct fields UserID, SourceURL, CardJSON; proto casing confined to the converter. Sentinel error ErrXxx form. No this/self receivers. No type-encoded names.",
+      "files": [],
+      "expectations": [
+        "Every new method on the repository type uses the receiver name 'r', matching the existing GetBusinessLine method — no 'repository', 'repo', 'this', or 'self' receivers",
+        "The hand-written domain struct uses correctly-cased acronym fields: UserID, SourceURL, CardJSON (not UserId, SourceUrl, CardJson)",
+        "Proto-generated style identifiers (UserId, SourceUrl, CardJson) appear ONLY inside the converter function/file, never in domain struct definitions or method signatures",
+        "The sentinel error for record-name conflict follows the ErrXxx pattern (e.g. ErrRecordNameConflict) — not ErrorXxx, XxxError, and not used for a numeric code",
+        "Method and local variable names do not encode types (no 'sessionList', 'userSlice', 'recordMap')",
+        "The converter maps each proto field to its correctly-cased domain field, with both casings visible in the same function (the mapper-firewall pattern)"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "帮我给 workspace service 加个功能：触发 runtime 重启（后台异步执行，真正重启开个 goroutine 做），再加一个查询当前有没有重启在进行中的方法，没有就返回 false。代码写到 outputs 目录。",
+      "expected_output": "The restart-triggering method must be named as an action (RequestRuntimeRestart / TriggerRestart), never as a noun or Get-style getter — a name like RestartResult() hides that it spawns a goroutine. The in-progress check must be a predicate (IsRestartInProgress / HasActiveRestart) or Find/Lookup, not GetX. The goroutine-spawning function must not use pure vocabulary (Get/Compute/Validate). Async behavior documented in the doc comment.",
+      "files": [],
+      "expectations": [
+        "The method that triggers the restart uses an action verb (Request*/Trigger*/Restart*) and is NOT named as a noun or Get-style getter (no RestartResult(), GetRestart(), RestartStatus() for the action)",
+        "The in-progress check is named as a predicate (Is*/Has*) returning bool, or as Find*/Lookup* — not GetX",
+        "No function that spawns a goroutine or mutates state uses pure-query vocabulary (Get*/Compute*/Validate*/Format*)",
+        "The doc comment on the async action method states that it runs asynchronously / spawns work in the background",
+        "All receivers are at most 2 characters and consistent per type"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "repository 接口加两个方法：按 id 查 work gate（可能不存在，返回 (T, bool, error) 这种），还有查一条 workflow run 快照（也可能不存在，同样 bool 形式）。再加一个 sentinel error 表示 run 不存在供其他路径用。现有接口片段：\n\ntype Repository interface {\n\tSaveWorkGate(ctx context.Context, gate WorkGate) error\n\tListWorkGates(ctx context.Context, workspaceID string) ([]WorkGate, error)\n}\n\n代码写到 outputs 目录。",
+      "expected_output": "Methods with the comma-ok absence shape must be named Find*/Lookup*, not Get* — Get promises present-or-error. If the agent keeps Get names it must switch absence to an error (ErrXxxNotFound). Sentinel error must be ErrXxxNotFound with Err prefix. New methods reuse the interface's existing vocabulary (Save/List already there).",
+      "files": [],
+      "expectations": [
+        "The comma-ok methods (returning (T, bool, error)) are named Find* or Lookup* — not Get* (Get with a bool absence outcome is a contract violation)",
+        "If any method named Get* exists, its absence handling is error-based (ErrXxxNotFound), not (zero-value, false, nil)",
+        "The sentinel error for a missing run follows the ErrXxx pattern (e.g. ErrWorkflowRunNotFound) — lowercase unpunctuated error string",
+        "No interface or type names use an I prefix or Interface suffix; no package-name stutter in type names",
+        "New method names reuse the existing vocabulary family (Save/List verbs already present; no gratuitous new synonyms like Store/Persist for the same operations)"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "这个 service 已有方法：FetchReport(ctx, id) (*Report, error)（走远程 HTTP）、AcquireLease(ctx, key) (Lease, error)、ReleaseLease(ctx, lease) error。现在要加：1) 查询远端一个 report 的所有历史版本（也是 HTTP 调用）2) 丢弃一个坏掉的 lease 3) 一个布尔配置项控制是否自动重试。写到一个文件里加到现有类型上，代码写到 outputs（可以包含现有方法的 stub）。",
+      "expected_output": "New remote fetch must reuse the existing verb Fetch* (not Get*/Retrieve*/Obtain*/Load*). Lease teardown must announce the teardown effect (Release* or a documented distinct verb like Discard* for the broken-lease path — with a comment stating the contract difference). The boolean option must be positive (WithAutoRetry / IsAutoRetryEnabled), not negated (no DisableAutoRetry/NoRetry).",
+      "files": [],
+      "expectations": [
+        "The new remote-history method reuses the existing verb Fetch* (e.g. FetchReportVersions), not Get*/Retrieve*/Obtain*/Load*",
+        "The lease teardown method's name announces the teardown effect (Release*/Discard*/Drop*) — not a generic verb (Handle*/Process*/Do*) or a bare noun",
+        "If teardown introduces a verb distinct from the existing Release* (e.g. DiscardLease), a doc comment states the contract difference between the two verbs",
+        "The boolean retry option is named positively (WithAutoRetry / AutoRetry / IsAutoRetryEnabled) — no negated name (DisableAutoRetry, NoRetry, WithoutRetry)",
+        "Doc comments on the remote methods signal the HTTP/remote-call cost"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "我要起一个全新的小 CLI 项目：从本地读一组 CSV 文件、按指定列去重、把合并结果输出成 JSON。帮我搭好初始结构：go.mod、一个读 CSV 的 package、一个负责去重和写 JSON 的 package、以及 cmd 下的入口。去重列的索引、输出缓冲区大小这些用常量定义。所有代码写到 outputs/ 目录（按 go package 结构组织）。",
+      "expected_output": "A fresh module whose import path is a host/path you'd plausibly own (github.com/.../csvdedup), not a bare word. Packages named for what they provide, avoiding names that collide with stdlib or common local vars (no package 'csv' shadowing encoding/csv, no 'util'/'buf' grab-bag). Constants named by role (defaultBufferSize, dedupColumnIndex), never single letters. Core functions named to reveal intent (action verbs), not opaque generics.",
+      "files": [],
+      "expectations": [
+        "The go.mod module path is host/path form with a dot in the first segment (e.g. github.com/.../csvdedup, example.com/.../csvdedup) — NOT a bare word like 'csv', 'csvdedup', 'app', 'mymodule', or 'tool'",
+        "No package is named 'csv' (shadows encoding/csv), 'buf', 'util', 'utils', 'common', 'helper', 'helpers', 'misc', 'base', or 'shared' — packages are named for what they provide (e.g. csvread, dedup, csvio)",
+        "No single-letter constant declarations appear (no 'const c =', 'const i =', 'const n =' etc.) — constants are named by role (defaultBufferSize, dedupColumnIndex)",
+        "No SCREAMING_SNAKE_CASE constants and no K-prefixed constants (no MAX_BUFFER_SIZE, KBufferSize)",
+        "The core dedup/output functions use intention-revealing action verbs (Dedup/Merge/WriteJSON/Export) — not opaque single-letter or generic names (Do/Handle/Process/Run as the only name for the core logic)"
+      ]
+    }
+  ]
+}
