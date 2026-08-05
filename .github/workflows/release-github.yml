@@ -40,6 +40,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${GITHUB_REF_NAME}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release ${TAG} already exists — skipping create."
+            exit 0
+          fi
           if [[ "${USE_GENERATE}" == "1" ]]; then
             gh release create "$TAG" --title "$TAG" --generate-notes
           else

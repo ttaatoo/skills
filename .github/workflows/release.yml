@@ -24,7 +24,7 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install --no-fund --no-audit
 
       - name: Create Version Pull Request or Tag
         id: changesets
