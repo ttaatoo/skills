@@ -71,21 +71,48 @@ for d in skills/*/; do
 done
 
 echo
-echo "== Version consistency (Claude plugin.json ↔ marketplace entry) =="
+echo "== Version consistency (train package.json ↔ all plugin manifests) =="
 python3 <<'PY'
 import json, sys
 from pathlib import Path
 
-mp = json.loads(Path(".claude-plugin/marketplace.json").read_text())
 errors = 0
+pkg_path = Path("package.json")
+if not pkg_path.exists():
+    print("FAIL: missing package.json (train version source)")
+    sys.exit(1)
+
+train = json.loads(pkg_path.read_text())["version"]
+print(f"train package.json     {train}")
+
+mp = json.loads(Path(".claude-plugin/marketplace.json").read_text())
 by_name = {p["name"]: p for p in mp["plugins"]}
 
-root = json.loads(Path(".claude-plugin/plugin.json").read_text())
-if by_name.get("all", {}).get("version") != root.get("version"):
-    print(f"FAIL: all bundle version mismatch marketplace={by_name.get('all',{}).get('version')} plugin.json={root.get('version')}")
+meta = (mp.get("metadata") or {}).get("version")
+if meta != train:
+    print(f"FAIL: marketplace metadata.version={meta} != train {train}")
     errors += 1
 else:
-    print(f"ok  all                  {root['version']}")
+    print(f"ok  marketplace.metadata {meta}")
+
+root = json.loads(Path(".claude-plugin/plugin.json").read_text())
+if root.get("version") != train:
+    print(f"FAIL: all plugin.json={root.get('version')} != train {train}")
+    errors += 1
+elif by_name.get("all", {}).get("version") != train:
+    print(f"FAIL: all marketplace entry={by_name.get('all',{}).get('version')} != train {train}")
+    errors += 1
+else:
+    print(f"ok  all                  {train}")
+
+codex_root = Path(".codex-plugin/plugin.json")
+if codex_root.exists():
+    croot = json.loads(codex_root.read_text())["version"]
+    if croot != train:
+        print(f"FAIL: codex root plugin.json={croot} != train {train}")
+        errors += 1
+    else:
+        print(f"ok  all (codex)          {croot}")
 
 for skill_dir in sorted(Path("skills").iterdir()):
     if not skill_dir.is_dir():
@@ -98,8 +125,11 @@ for skill_dir in sorted(Path("skills").iterdir()):
         continue
     ver = json.loads(plugin_path.read_text())["version"]
     mver = by_name.get(name, {}).get("version")
-    if mver != ver:
-        print(f"FAIL: {name} version mismatch marketplace={mver} plugin.json={ver}")
+    if ver != train:
+        print(f"FAIL: {name} plugin.json={ver} != train {train}")
+        errors += 1
+    elif mver != train:
+        print(f"FAIL: {name} marketplace={mver} != train {train}")
         errors += 1
     else:
         print(f"ok  {name:<20} {ver}")
@@ -107,8 +137,8 @@ for skill_dir in sorted(Path("skills").iterdir()):
     codex = skill_dir / ".codex-plugin" / "plugin.json"
     if codex.exists():
         cver = json.loads(codex.read_text())["version"]
-        if cver != ver:
-            print(f"FAIL: {name} codex version {cver} != claude {ver}")
+        if cver != train:
+            print(f"FAIL: {name} codex version {cver} != train {train}")
             errors += 1
 
 sys.exit(1 if errors else 0)

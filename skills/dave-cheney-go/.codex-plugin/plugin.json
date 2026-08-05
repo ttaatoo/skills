@@ -9,6 +9,12 @@
   "homepage": "https://github.com/ttaatoo/skills/tree/main/skills/dave-cheney-go",
   "repository": "https://github.com/ttaatoo/skills",
   "license": "MIT",
-  "keywords": ["go", "golang", "design", "maintainability", "dave-cheney"],
+  "keywords": [
+    "go",
+    "golang",
+    "design",
+    "maintainability",
+    "dave-cheney"
+  ],
   "skills": "./"
 }

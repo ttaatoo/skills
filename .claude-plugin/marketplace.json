@@ -6,7 +6,7 @@
     "url": "https://github.com/ttaatoo"
   },
   "metadata": {
-    "description": "Personal agent skills monorepo \u2014 Go idioms, naming, design trade-offs, and parallel workflows",
+    "description": "Personal agent skills monorepo — Go idioms, naming, design trade-offs, and parallel workflows",
     "version": "0.1.0"
   },
   "plugins": [
@@ -31,7 +31,7 @@
       "name": "effective-go",
       "source": "./skills/effective-go",
       "description": "Idiomatic Go style, correctness, and maintainability for writing, reviewing, and refactoring Go code",
-      "version": "0.1.1",
+      "version": "0.1.0",
       "author": {
         "name": "mt",
         "url": "https://github.com/ttaatoo"
@@ -48,7 +48,7 @@
     {
       "name": "go-naming",
       "source": "./skills/go-naming",
-      "description": "Go naming for packages, types, functions, methods, errors, and fields \u2014 form and semantic layers",
+      "description": "Go naming for packages, types, functions, methods, errors, and fields — form and semantic layers",
       "version": "0.1.0",
       "author": {
         "name": "mt",
@@ -65,7 +65,7 @@
     {
       "name": "dave-cheney-go",
       "source": "./skills/dave-cheney-go",
-      "description": "Go design trade-offs when the rule book is silent \u2014 simplicity, concurrency, package state, maintainability",
+      "description": "Go design trade-offs when the rule book is silent — simplicity, concurrency, package state, maintainability",
       "version": "0.1.0",
       "author": {
         "name": "mt",

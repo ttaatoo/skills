@@ -9,6 +9,12 @@
   "homepage": "https://github.com/ttaatoo/skills/tree/main/skills/ultrawork",
   "repository": "https://github.com/ttaatoo/skills",
   "license": "MIT",
-  "keywords": ["parallel", "agents", "orchestration", "ultrawork", "workflow"],
+  "keywords": [
+    "parallel",
+    "agents",
+    "orchestration",
+    "ultrawork",
+    "workflow"
+  ],
   "skills": "./"
 }

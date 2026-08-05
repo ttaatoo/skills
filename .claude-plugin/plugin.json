@@ -9,7 +9,12 @@
   "homepage": "https://github.com/ttaatoo/skills",
   "repository": "https://github.com/ttaatoo/skills",
   "license": "MIT",
-  "keywords": ["go", "workflow", "bundle", "skills"],
+  "keywords": [
+    "go",
+    "workflow",
+    "bundle",
+    "skills"
+  ],
   "skills": [
     "./skills/effective-go",
     "./skills/go-naming",

@@ -1,0 +1,22 @@
+{
+  "name": "ttaatoo-skills",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Personal agent skills monorepo — Go idioms, naming, design trade-offs, and parallel workflows",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ttaatoo/skills"
+  },
+  "license": "MIT",
+  "scripts": {
+    "changeset": "changeset",
+    "version": "changeset version && node scripts/sync-plugin-versions.js",
+    "sync-versions": "node scripts/sync-plugin-versions.js",
+    "validate": "bash scripts/validate.sh"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "^0.7.0",
+    "@changesets/cli": "^2.30.0"
+  },
+  "packageManager": "npm@10.9.4"
+}

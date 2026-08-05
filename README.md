@@ -2,32 +2,66 @@
 
 Personal monorepo of agent skills ([Agent Skills](https://agentskills.io) / Claude Code / Codex). Each skill is markdown plus optional references — small, composable, and installable one-by-one or as a full bundle.
 
-**Marketplace:** `ttaatoo-skills` · **Repo:** [ttaatoo/skills](https://github.com/ttaatoo/skills)
+**Marketplace:** `ttaatoo-skills` · **Repo:** [ttaatoo/skills](https://github.com/ttaatoo/skills) · **Train version:** see [Releases](https://github.com/ttaatoo/skills/releases)
+
+Two install philosophies (same repo, pick one per skill):
+
+| | **Claude / Codex plugin** | **`npx skills` (skills.sh)** |
+|---|---|---|
+| What you get | Managed, read-only copy | Editable files in your project |
+| Updates | Marketplace / plugin update when train version changes | `npx skills update` when you want |
+| Select skills | Discover list or install `all` | Interactive multi-select |
+| Best for | Subscribe and stay current | Fork, tweak, own the files |
+
+Installing the same skill both ways leaves you with two copies — pick one path.
 
 ## Install
 
-### Option A — Claude Code (native plugin, best update story)
+### A — Claude Code plugin (subscribe, best auto-update)
 
 ```text
 /plugin marketplace add ttaatoo/skills
+```
+
+Then either:
+
+**Whole bundle**
+
+```text
+/plugin install all@ttaatoo-skills
+```
+
+**Pick skills** (Discover UI or one command each)
+
+```text
 /plugin install effective-go@ttaatoo-skills
+/plugin install go-naming@ttaatoo-skills
 ```
 
 | Want | Command |
 |---|---|
-| One skill | `/plugin install effective-go@ttaatoo-skills` |
-| Another skill | `/plugin install go-naming@ttaatoo-skills` |
 | Everything | `/plugin install all@ttaatoo-skills` |
+| One skill | `/plugin install effective-go@ttaatoo-skills` |
+| Browse | `/plugin` → **Discover** → `ttaatoo-skills` |
 | Activate | `/reload-plugins` if the install summary asks for it |
 
-CLI equivalent:
+CLI:
 
 ```bash
 claude plugin marketplace add ttaatoo/skills
-claude plugin install effective-go@ttaatoo-skills
+claude plugin install all@ttaatoo-skills
+# or: claude plugin install effective-go@ttaatoo-skills
 ```
 
-### Option B — `npx skills` (Claude + Codex + many other agents)
+### B — `npx skills` (interactive select — any agent)
+
+Interactive installer (choose skills + agents):
+
+```bash
+npx skills@latest add ttaatoo/skills
+```
+
+Non-interactive examples:
 
 ```bash
 # one skill, global
@@ -43,7 +77,7 @@ npx skills add ttaatoo/skills -g -a claude-code -a codex --all
 npx skills add ttaatoo/skills --list
 ```
 
-### Option C — Codex CLI marketplace
+### C — Codex CLI marketplace
 
 ```bash
 codex plugin marketplace add ttaatoo/skills
@@ -51,26 +85,27 @@ codex plugin marketplace add ttaatoo/skills
 
 Then install `effective-go`, `go-naming`, `dave-cheney-go`, `ultrawork`, or `all` from the plugin browser (`/plugins`) or CLI.
 
-Local test without pushing:
+### Local test (clone, no push)
 
 ```text
-# from a clone of this repo
 /plugin marketplace add ./path/to/skills
 /plugin install effective-go@ttaatoo-skills
 ```
 
 ## Update
 
-After this repo ships a new skill version (version field bumped + pushed), users refresh as follows.
+After this repo ships a new **train version** (see [Releases](https://github.com/ttaatoo/skills/releases)):
 
 ### Claude Code
 
 ```text
 /plugin marketplace update ttaatoo-skills
+/plugin update all@ttaatoo-skills
+# or per skill:
 /plugin update effective-go@ttaatoo-skills
 ```
 
-Or use the `/plugin` UI to update installed plugins. Claude only pulls a new copy when the plugin **version string** changes — see [VERSIONING.md](VERSIONING.md).
+Claude only pulls a new copy when the plugin **version string** changes — see [VERSIONING.md](VERSIONING.md).
 
 ### npx skills
 
@@ -89,33 +124,40 @@ Then update/reinstall the plugin from `/plugins`.
 
 ## Available skills
 
-| Plugin name | Version | Description |
-|---|---|---|
-| `effective-go` | 0.1.1 | Idiomatic Go style, correctness, maintainability |
-| `go-naming` | 0.1.0 | Go naming (form + semantics) |
-| `dave-cheney-go` | 0.1.0 | Design trade-offs when the rule book is silent |
-| `ultrawork` | 0.1.0 | Maximum safe parallel agent work |
-| `all` | 0.1.0 | Bundle of every skill above |
+| Plugin name | Description |
+|---|---|
+| `effective-go` | Idiomatic Go style, correctness, maintainability |
+| `go-naming` | Go naming (form + semantics) |
+| `dave-cheney-go` | Design trade-offs when the rule book is silent |
+| `ultrawork` | Maximum safe parallel agent work |
+| `all` | Bundle of every skill above |
+
+Versions follow the repo **train** (`package.json`); all plugins share the same number on each release.
 
 ## Layout
 
 ```
+package.json                 # train version (Changesets)
+.changeset/                  # pending release notes
+.github/workflows/           # release + validate CI
 .claude-plugin/
-  marketplace.json      # Claude catalog (per-skill + all)
-  plugin.json           # all-bundle plugin
+  marketplace.json           # Claude catalog (per-skill + all)
+  plugin.json                # all-bundle plugin
 .codex-plugin/
-  plugin.json           # all-bundle for Codex
+  plugin.json                # all-bundle for Codex
 .agents/plugins/
-  marketplace.json      # Codex catalog
+  marketplace.json           # Codex catalog
 skills/
   <skill-name>/
     SKILL.md
-    .claude-plugin/plugin.json   # version + install unit
+    .claude-plugin/plugin.json
     .codex-plugin/plugin.json
     references/ | examples/ | agents/ | …
 scripts/
-  bump-version.sh       # bump skill/all versions in sync
-  validate.sh           # manifest + frontmatter checks
+  sync-plugin-versions.js    # train → all manifests
+  bump-version.sh            # local train bump + sync
+  validate.sh                # manifest + frontmatter checks
+  extract-changelog.js       # Release notes from CHANGELOG
 ```
 
 A skill is a folder with `SKILL.md`. See [`skills/ultrawork`](skills/ultrawork) for a full multi-file example.
@@ -146,20 +188,26 @@ description: <one dense sentence — when to use it>
 
 ## Authoring & releasing
 
-1. Edit or add a skill under `skills/<name>/`.
-2. Bump version so clients update: `scripts/bump-version.sh <name>` (or pass an explicit semver).
-3. Validate: `scripts/validate.sh`.
-4. Note the change in [CHANGELOG.md](CHANGELOG.md); push.
+Preferred (automatic tag + GitHub Release on `main`):
+
+```bash
+# edit skills/...
+npx changeset                 # patch | minor | major + summary
+npm run validate
+git add -A && git commit && git push   # PR → merge
+# CI: version PR → merge → tag vX.Y.Z → GitHub Release
+```
+
+Local train bump / hotfix:
+
+```bash
+scripts/bump-version.sh --list
+scripts/bump-version.sh patch
+# edit CHANGELOG.md, commit, tag, push --tags
+```
 
 Full rules: **[VERSIONING.md](VERSIONING.md)**.
 
-```bash
-scripts/bump-version.sh --list          # current versions
-scripts/bump-version.sh go-naming       # patch bump
-scripts/bump-version.sh ultrawork 0.2.0
-scripts/validate.sh
-```
-
 ## Status
 
-Marketplace + per-skill install/update is wired for Claude Code, Codex, and `npx skills`. Skills start at `0.1.0`.
+Marketplace + per-skill install, Changesets train releases, and validate CI are wired for Claude Code, Codex, and `npx skills`.

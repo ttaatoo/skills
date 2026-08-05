@@ -1,6 +1,6 @@
 {
   "name": "effective-go",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "description": "Idiomatic Go style, correctness, and maintainability for writing, reviewing, and refactoring Go code.",
   "author": {
     "name": "mt",

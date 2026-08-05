@@ -9,6 +9,11 @@
   "homepage": "https://github.com/ttaatoo/skills/tree/main/skills/go-naming",
   "repository": "https://github.com/ttaatoo/skills",
   "license": "MIT",
-  "keywords": ["go", "golang", "naming", "style"],
+  "keywords": [
+    "go",
+    "golang",
+    "naming",
+    "style"
+  ],
   "skills": "./"
 }
