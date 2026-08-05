@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ultrawork"
+  short_description: "Safe cross-runtime agent orchestration"
+  default_prompt: "Use $ultrawork to complete this task with maximum safe parallelism and a verified final deliverable."
