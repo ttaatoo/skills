@@ -1,0 +1,14 @@
+{
+  "name": "go-naming",
+  "version": "0.1.0",
+  "description": "Go naming for packages, types, functions, methods, errors, and fields — form and semantic layers.",
+  "author": {
+    "name": "mt",
+    "url": "https://github.com/ttaatoo"
+  },
+  "homepage": "https://github.com/ttaatoo/skills/tree/main/skills/go-naming",
+  "repository": "https://github.com/ttaatoo/skills",
+  "license": "MIT",
+  "keywords": ["go", "golang", "naming", "style"],
+  "skills": ["."]
+}

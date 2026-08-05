@@ -1,0 +1,19 @@
+{
+  "name": "all",
+  "version": "0.1.0",
+  "description": "All skills from ttaatoo/skills — effective-go, go-naming, dave-cheney-go, ultrawork",
+  "author": {
+    "name": "mt",
+    "url": "https://github.com/ttaatoo"
+  },
+  "homepage": "https://github.com/ttaatoo/skills",
+  "repository": "https://github.com/ttaatoo/skills",
+  "license": "MIT",
+  "keywords": ["go", "workflow", "bundle", "skills"],
+  "skills": [
+    "./skills/effective-go",
+    "./skills/go-naming",
+    "./skills/dave-cheney-go",
+    "./skills/ultrawork"
+  ]
+}

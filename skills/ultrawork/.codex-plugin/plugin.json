@@ -1,0 +1,14 @@
+{
+  "name": "ultrawork",
+  "version": "0.1.0",
+  "description": "Maximum safe parallelism for audits, research, migrations, and multi-step work across Claude Workflow, Codex, and native agents.",
+  "author": {
+    "name": "mt",
+    "url": "https://github.com/ttaatoo"
+  },
+  "homepage": "https://github.com/ttaatoo/skills/tree/main/skills/ultrawork",
+  "repository": "https://github.com/ttaatoo/skills",
+  "license": "MIT",
+  "keywords": ["parallel", "agents", "orchestration", "ultrawork", "workflow"],
+  "skills": "./"
+}

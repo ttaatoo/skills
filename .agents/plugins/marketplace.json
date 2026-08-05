@@ -1,0 +1,68 @@
+{
+  "name": "ttaatoo-skills",
+  "interface": {
+    "displayName": "ttaatoo skills"
+  },
+  "plugins": [
+    {
+      "name": "all",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "effective-go",
+      "source": {
+        "source": "local",
+        "path": "./skills/effective-go"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "go-naming",
+      "source": {
+        "source": "local",
+        "path": "./skills/go-naming"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "dave-cheney-go",
+      "source": {
+        "source": "local",
+        "path": "./skills/dave-cheney-go"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    },
+    {
+      "name": "ultrawork",
+      "source": {
+        "source": "local",
+        "path": "./skills/ultrawork"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

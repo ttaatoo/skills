@@ -1,0 +1,102 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "ttaatoo-skills",
+  "owner": {
+    "name": "mt",
+    "url": "https://github.com/ttaatoo"
+  },
+  "metadata": {
+    "description": "Personal agent skills monorepo \u2014 Go idioms, naming, design trade-offs, and parallel workflows",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "all",
+      "source": "./",
+      "description": "Install every skill in this marketplace (effective-go, go-naming, dave-cheney-go, ultrawork)",
+      "version": "0.1.0",
+      "author": {
+        "name": "mt",
+        "url": "https://github.com/ttaatoo"
+      },
+      "category": "development",
+      "keywords": [
+        "go",
+        "workflow",
+        "bundle"
+      ],
+      "homepage": "https://github.com/ttaatoo/skills"
+    },
+    {
+      "name": "effective-go",
+      "source": "./skills/effective-go",
+      "description": "Idiomatic Go style, correctness, and maintainability for writing, reviewing, and refactoring Go code",
+      "version": "0.1.1",
+      "author": {
+        "name": "mt",
+        "url": "https://github.com/ttaatoo"
+      },
+      "category": "development",
+      "keywords": [
+        "go",
+        "golang",
+        "idioms",
+        "style"
+      ],
+      "homepage": "https://github.com/ttaatoo/skills/tree/main/skills/effective-go"
+    },
+    {
+      "name": "go-naming",
+      "source": "./skills/go-naming",
+      "description": "Go naming for packages, types, functions, methods, errors, and fields \u2014 form and semantic layers",
+      "version": "0.1.0",
+      "author": {
+        "name": "mt",
+        "url": "https://github.com/ttaatoo"
+      },
+      "category": "development",
+      "keywords": [
+        "go",
+        "golang",
+        "naming"
+      ],
+      "homepage": "https://github.com/ttaatoo/skills/tree/main/skills/go-naming"
+    },
+    {
+      "name": "dave-cheney-go",
+      "source": "./skills/dave-cheney-go",
+      "description": "Go design trade-offs when the rule book is silent \u2014 simplicity, concurrency, package state, maintainability",
+      "version": "0.1.0",
+      "author": {
+        "name": "mt",
+        "url": "https://github.com/ttaatoo"
+      },
+      "category": "development",
+      "keywords": [
+        "go",
+        "golang",
+        "design",
+        "maintainability"
+      ],
+      "homepage": "https://github.com/ttaatoo/skills/tree/main/skills/dave-cheney-go"
+    },
+    {
+      "name": "ultrawork",
+      "source": "./skills/ultrawork",
+      "description": "Maximum safe parallelism for audits, research, migrations, and multi-step agent work",
+      "version": "0.1.0",
+      "author": {
+        "name": "mt",
+        "url": "https://github.com/ttaatoo"
+      },
+      "category": "workflow",
+      "keywords": [
+        "parallel",
+        "agents",
+        "orchestration",
+        "ultrawork"
+      ],
+      "homepage": "https://github.com/ttaatoo/skills/tree/main/skills/ultrawork"
+    }
+  ]
+}
